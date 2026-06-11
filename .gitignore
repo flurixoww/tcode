@@ -1,5 +1,5 @@
 tcode_env/
 __pycache__/
-*.pyc
+*.pyr
 .env
 brainstorm.txt

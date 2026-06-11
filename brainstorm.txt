@@ -1,3 +1,0 @@
-
-4. Set up github for the code
-5. Start using vim
