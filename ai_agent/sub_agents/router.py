@@ -3,8 +3,6 @@ import re
 
 from ollama import chat
 
-from ai_agent.sub_agents.agent_prompts import router_prompt
-
 
 def route(prompt: str) -> str:
     """
