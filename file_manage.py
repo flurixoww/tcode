@@ -1,9 +1,10 @@
-import pathlib
-
-# File management backend
+from pathlib import Path
 
 
 def file_opener(file_name):
-    with open(pathlib.Path(file_name), "r", encoding="utf-8") as file:
-        content = file.read()
-        return content
+    path = Path(file_name).expanduser()
+
+    if not path.is_file():
+        raise FileNotFoundError(f"File not found: {path}")
+
+    return path.read_text(encoding="utf-8")

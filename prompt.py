@@ -1,32 +1,46 @@
-import os
+from pathlib import Path
 
 from file_manage import file_opener
 
 
-def input_handling():
-    # Asking which file to read
-    file_choice = input(f"{os.listdir()} \n")
-    print(f"file_choice: {file_choice}")
+def available_files(directory=None):
+    base = Path.cwd() if directory is None else Path(directory)
+    return sorted(path.name for path in base.iterdir() if path.is_file())
 
-    # Asking user for a prompt message
-    prompt_message = input("Prompt:")
+
+def input_handling():
+    files = available_files()
+
+    if files:
+        print("Available files:")
+        for name in files:
+            print(f" - {name}")
+    else:
+        print("No files found in the current directory.")
+
+    file_choice = input("File to read (leave blank for none): ").strip()
+    prompt_message = input("Prompt: ").strip()
 
     return prompt_message, file_choice
 
 
 def make_prompt(prompt_message, file_choice):
+    context_block = "No file selected."
 
-    # Full prompt
-    prompt = f"""
-    You are given a file: {file_choice}
-    which contains the following content:
-    {file_opener(file_choice)}
+    if file_choice:
+        context_block = f"File: {file_choice}\nContent:\n{file_opener(file_choice)}"
 
-    Using this information, answer the following:
-        {prompt_message}
-    Answering follow these instructions:
-        1. Asnwer the question shortly, user needs a meaningful response.
-        2. If you are writing code, before writing it, write the following "Working with a code (file name).
-        3. Answer only what user asks for, nothing extra.
-    """
-    return prompt
+    return f"""
+You are assisting with the following context:
+
+{context_block}
+
+Using this information, answer the user's request:
+
+{prompt_message}
+
+Instructions:
+1. Answer shortly and clearly.
+2. If you write code, begin with: "Working with code: <file name>"
+3. Answer only what the user asks for.
+""".strip()
