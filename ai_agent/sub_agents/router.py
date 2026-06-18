@@ -3,17 +3,50 @@ import re
 
 from ollama import chat
 
-
-def route(prompt: str):
-    response = chat(
-        model="gemma3:4b",
-        messages=[{"role": "user", "content": prompt}],
-        options={"temperature": 0},
-    )
-    return response.message.content
+from ai_agent.sub_agents.agent_prompts import router_prompt
 
 
-def parse_llm_json(raw):
+def route(prompt: str) -> str:
+    """
+    Routes the given prompt to the appropriate agent based on the LLM's response.
+
+    Args:
+        prompt (str): The user's prompt to route.
+
+    Returns:
+        str: The raw text response from the LLM. (expected to contain JSON)
+
+    Raises:
+        RuntimeError: If the local LLM communication fails.
+
+    """
+
+    try:
+        response = chat(
+            model="gemma3:4b",
+            messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0},
+        )
+        return response["message"]["content"]
+
+    except Exception as exc:
+        raise RuntimeError(f"Failed to communicate with LLM: {exc}") from exc
+
+
+def parse_llm_json(raw: str) -> dict:
+    """
+    Parses the raw LLM response into a valid JSON dictionary.
+
+    Args:
+        raw (str): The raw LLM response string.
+
+    Returns:
+        dict: The parsed JSON dictionary.
+
+    Raises:
+        ValueError: If the raw response is not valid JSON.
+    """
+
     cleaned = raw.strip()
 
     fence_match = re.fullmatch(r"```(?:json)?\s*(.*?)\s*```", cleaned, flags=re.DOTALL)
