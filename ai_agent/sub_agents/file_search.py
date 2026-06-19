@@ -4,7 +4,7 @@ import os
 import chromadb
 
 
-def file_info() -> tuple:
+def file_info() -> tuple[list[str], list[str]]:
     """
     Extracts the names and the content of the files in the current directory.
 
@@ -56,7 +56,7 @@ def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collect
         chroma_client = chromadb.Client()
 
         # Chroma file architecture
-        files_collection = chroma_client.create_collection(name="files")
+        files_collection = chroma_client.get_or_create_collection(name="files")
 
         # Importing files and content of the files into chroma file architecture
         files_collection.add(ids=ids, documents=documents)
@@ -66,7 +66,9 @@ def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collect
         raise RuntimeError(f"The initialization of the model failed {e}") from e
 
 
-def file_distance(files_collection: chromadb.Collection, prompt: str) -> tuple:
+def file_distance(
+    files_collection: chromadb.Collection, prompt: str
+) -> tuple[list[str], list[float]]:
     """
     Using RAG model finds the likability of the files to the prompt.
 
@@ -88,12 +90,17 @@ def file_distance(files_collection: chromadb.Collection, prompt: str) -> tuple:
             query_texts=prompt,
             include=["distances"],
         )
-        return result["ids"], result["distances"]
+
+        if result["distances"] is not None:
+            return result["ids"][0], result["distances"][0]
+        else:
+            return result["ids"][0], []
+
     except Exception as e:
         raise RuntimeError(f"Error occured when initializing a model. {e}") from e
 
 
-def likely_files(file_ids: list, distances: list) -> list:
+def likely_files(file_ids: list[str], distances: list[float]) -> list[str]:
     """
     Picks the closest files to the prompt.
 
@@ -111,7 +118,7 @@ def likely_files(file_ids: list, distances: list) -> list:
     # To be improved in the future
     likely_files = []
     try:
-        for file in range(len(file_ids) - 1):
+        for file in range(len(file_ids)):
             if distances[file] <= 1.25:
                 likely_files.append(file_ids[file])
             if len(likely_files) < 3 and distances[file] > 1.25:
