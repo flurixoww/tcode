@@ -3,3 +3,4 @@ __pycache__/
 *.pyr
 .env
 brainstorm.txt
+.DS_store
