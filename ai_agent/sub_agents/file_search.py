@@ -26,10 +26,14 @@ def file_info() -> tuple[list[str], list[str]]:
 
         for file in os.listdir():
             if os.path.isfile(file):
-                files.append(file)
-                with open(file, "r", encoding="utf-8") as f:
-                    file_content = f.read()
-                    files_content.append(file_content)
+                try:
+                    with open(file, "r", encoding="utf-8") as f:
+                        file_content = f.read()
+                        files.append(file)
+                        files_content.append(file_content)
+                except (UnicodeDecodeError, PermissionError):
+                    # Skip files that are not UTF-8 text or cannot be accessed
+                    continue
         return files, files_content
 
     except Exception as e:
@@ -66,6 +70,7 @@ def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collect
         raise RuntimeError(f"The initialization of the model failed {e}") from e
 
 
+# TODO: Improve the RAG model
 def file_distance(
     files_collection: chromadb.Collection, prompt: str
 ) -> tuple[list[str], list[float]]:

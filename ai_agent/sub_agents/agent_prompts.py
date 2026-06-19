@@ -1,4 +1,4 @@
-def router_prompt():
+def router_prompt() -> str:
     settings_router = """
     You are a routing classifier for a local AI assistant.
 
