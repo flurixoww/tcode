@@ -1,7 +1,7 @@
 from ollama import chat
 
 
-def route(prompt: str):
+def main_model(prompt: str):
     response = chat(
         model="gemma3:4b",
         messages=[{"role": "user", "content": prompt}],

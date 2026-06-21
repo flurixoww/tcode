@@ -1,10 +1,11 @@
-from ai_agent.sub_agents.agent_prompts import router_prompt
+from ai_agent.sub_agents.agent_prompts import main_model_prompt, router_prompt
 from ai_agent.sub_agents.file_search import (
     chroma_client_initialization,
     file_distance,
     file_info,
     likely_files,
 )
+from ai_agent.sub_agents.main_model import main_model
 from ai_agent.sub_agents.router import parse_llm_json, route
 
 
@@ -48,8 +49,9 @@ def main():
     json_model_response = parse_llm_json(raw_model_response)
 
     if json_model_response["decision"] == "file":
+        print("Using access to the files to give an answer...")
         file_ids_content = file_info()
-
+        # Initialization && implemination of the model
         chroma_files_collection_architecture = chroma_client_initialization(
             file_ids_content[0], file_ids_content[1]
         )
@@ -61,12 +63,23 @@ def main():
         files_possibility = likely_files(
             distance_to_the_files[0], distance_to_the_files[1]
         )
+        print(f"Using following files to answer the question: {files_possibility}")
+        # Extract content from possible files && format it
+        possible_files_content = []
+        for file in files_possibility:
+            with open(file, "r", encoding="utf-8") as f:
+                file_content = f.read()
+                possible_files_content.append(file_content)
+        possible_files_content_string = "".join(possible_files_content)
 
-        # Then it is passed to the main model
-
+        # Main model question inquiry
+        response = main_model(
+            f"{main_model_prompt} <user query> {user_prompt} <attached files> {possible_files_content_string}"
+        )
+        print(response)
     else:
-        None
-        # Then it is passed to the main model
+        response = main_model(user_prompt)
+        print(response)
 
 
 if __name__ == "__main__":
