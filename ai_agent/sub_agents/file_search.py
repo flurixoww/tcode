@@ -5,8 +5,11 @@ import chromadb
 import langchain_text_splitters
 from langchain_text_splitters import Language, RecursiveCharacterTextSplitter
 
-
 # Initialization of chroma client -> initialization of code aware splitter
+# Splitting files in chunks and organizing them -> Uploading those chunks in the RAG model
+# Find the file distances -> Pick the most likely files
+
+
 def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collection:
     """
     Initializes chroma and loads documents into the structure
@@ -49,8 +52,6 @@ def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSpli
 
     Raises:
         RuntimeError: Something went wrong during the initialization of splitting model.
-
-
     """
 
     try:
@@ -64,19 +65,22 @@ def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSpli
         ) from e
 
 
+# Needs to be divided into seperate functions
 def file_info(
     directory_path: str, splitter: RecursiveCharacterTextSplitter
-) -> tuple[list[str], list[str], list[str]]:
+) -> tuple[list[str], list[dict], list[str]]:
     """
     Extracts the names and the content of the files in the current directory and divides it into chunks.
 
     Args:
-        None
+        directory_path(str): Path to the directory from which all the files are going to be searched.
+        splitter(RecursiveCharacterTextSplitter): Splitter model
 
     Returns:
-        tuple: A tuple containing two lists:
+        tuple: A tuple containing three lists:
             documents (str): The chunks of the files.
-            metadatas (str):
+            metadatas (dict): File path to a certain chunk.
+            ids (str): Unique name for every chunk to keep database organized.
 
     Raises:
         RuntimeError: If file receiving was unsuccessful.
@@ -105,21 +109,45 @@ def file_info(
         raise RuntimeError(f"File extraction was unsuccessful: {e}") from e
 
 
-def chromadb_batch_upsert(documents, metadatas, ids, files_collection):
-    if documents:
-        files_collection.upsert(documents=documents, metadatas=metadatas, ids=ids)
-        print(f"Successfully indexed {len(documents)} chunks.")
+def chromadb_batch_upsert(
+    documents: list[str],
+    metadatas: list[dict],
+    ids: list[str],
+    files_collection: chromadb.Collection,
+):
+    """
+    Args:
+        documents(list[str]): The chunks of the files
+        metadatas(list[dict]): File path to a certain chunk.
+        ids(list[str]): Unique name for every chunk to keep database organized.
+        files_collection(chromadb.Collection): Chromadb collection architecture.
+    Returns:
+        None
+    Raises:
+        RuntimeError: When there was an error when trying to push the chunks.
+    """
+    try:
+        if documents:
+            files_collection.upsert(
+                documents=documents,
+                metadatas=metadatas,  # type: ignore
+                ids=ids,
+            )
+            print(f"Successfully indexed {len(documents)} chunks.")
+    except Exception as e:
+        raise RuntimeError(
+            f"Error occured when trying to index chunks into the rag file collection {e}"
+        ) from e
 
 
-# TODO: Improve the RAG model
-def file_distance(
+def find_closes_files(
     files_collection: chromadb.Collection, prompt: str
 ) -> tuple[list[str], list[float]]:
     """
     Using RAG model finds the likability of the files to the prompt.
 
     Args:
-        files_collection (chromadb.Collection): Chroma file architecture with already imported files
+        files_collection (chromadb.Collection): Chroma file architecture with already imported files.
         prompt (str): The user's prompt.
 
     Returns:
