@@ -2,9 +2,11 @@
 import os
 
 import chromadb
+import langchain_text_splitters
 from langchain_text_splitters import Language, RecursiveCharacterTextSplitter
 
 
+# Initialization of chroma client -> initialization of code aware splitter
 def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collection:
     """
     Initializes chroma and loads documents into the structure
@@ -35,7 +37,7 @@ def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collect
         raise RuntimeError(f"The initialization of the model failed {e}") from e
 
 
-def code_aware_splitter():
+def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSplitter:
     """
     Initializes code aware splitters to split the code for the RAG model
 
@@ -62,17 +64,19 @@ def code_aware_splitter():
         ) from e
 
 
-def file_info(directory_path: str, splitter: RecursiveCharacterTextSplitter):
+def file_info(
+    directory_path: str, splitter: RecursiveCharacterTextSplitter
+) -> tuple[list[str], list[str], list[str]]:
     """
-    Extracts the names and the content of the files in the current directory.
+    Extracts the names and the content of the files in the current directory and divides it into chunks.
 
     Args:
         None
 
     Returns:
         tuple: A tuple containing two lists:
-            files: The list containing names of the available files in the current directory.
-            files_content: The list containing content of the files.
+            documents (str): The chunks of the files.
+            metadatas (str):
 
     Raises:
         RuntimeError: If file receiving was unsuccessful.
@@ -86,12 +90,12 @@ def file_info(directory_path: str, splitter: RecursiveCharacterTextSplitter):
         for root, _, files in os.walk(directory_path):
             for file in files:
                 if file.endswith(".py"):
-                    file_path = os.path.join(root, file)  # Learn about os.path.join
+                    file_path = os.path.join(root, file)
                     with open(file_path, "r", encoding="utf-8") as f:
                         code_content = f.read()
 
                     chunks = splitter.split_text(code_content)  # Look up how it looks
-
+                    # Tf is going on here????
                     for i, chunk in enumerate(chunks):
                         documents.append(chunk)
                         metadatas.append({"source_file": file_path, "chunk_index": i})
@@ -99,6 +103,12 @@ def file_info(directory_path: str, splitter: RecursiveCharacterTextSplitter):
         return documents, metadatas, ids
     except Exception as e:
         raise RuntimeError(f"File extraction was unsuccessful: {e}") from e
+
+
+def chromadb_batch_upsert(documents, metadatas, ids, files_collection):
+    if documents:
+        files_collection.upsert(documents=documents, metadatas=metadatas, ids=ids)
+        print(f"Successfully indexed {len(documents)} chunks.")
 
 
 # TODO: Improve the RAG model
