@@ -2,42 +2,7 @@
 import os
 
 import chromadb
-
-
-def file_info() -> tuple[list[str], list[str]]:
-    """
-    Extracts the names and the content of the files in the current directory.
-
-    Args:
-        None
-
-    Returns:
-        tuple: A tuple containing two lists:
-            files: The list containing names of the available files in the current directory.
-            files_content: The list containing content of the files.
-
-    Raises:
-        RuntimeError: If file receiving was unsuccessful.
-    """
-
-    try:
-        files = []
-        files_content = []
-
-        for file in os.listdir():
-            if os.path.isfile(file):
-                try:
-                    with open(file, "r", encoding="utf-8") as f:
-                        file_content = f.read()
-                        files.append(file)
-                        files_content.append(file_content)
-                except (UnicodeDecodeError, PermissionError):
-                    # Skip files that are not UTF-8 text or cannot be accessed
-                    continue
-        return files, files_content
-
-    except Exception as e:
-        raise RuntimeError(f"File extraction was unsuccessful: {e}") from e
+from langchain_text_splitters import Language, RecursiveCharacterTextSplitter
 
 
 def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collection:
@@ -57,10 +22,10 @@ def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collect
 
     try:
         # Chroma initialization
-        chroma_client = chromadb.Client()
+        chroma_client = chromadb.PersistentClient(path="./chroma_db")
 
         # Chroma file architecture
-        files_collection = chroma_client.get_or_create_collection(name="files")
+        files_collection = chroma_client.get_or_create_collection(name="codebase_rag")
 
         # Importing files and content of the files into chroma file architecture
         files_collection.add(ids=ids, documents=documents)
@@ -68,6 +33,72 @@ def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collect
         return files_collection
     except Exception as e:
         raise RuntimeError(f"The initialization of the model failed {e}") from e
+
+
+def code_aware_splitter():
+    """
+    Initializes code aware splitters to split the code for the RAG model
+
+    Args:
+        None
+
+    Retrurns:
+        RecursiveCharacterTextSplitter: Splitter model
+
+    Raises:
+        RuntimeError: Something went wrong during the initialization of splitting model.
+
+
+    """
+
+    try:
+        splitter = RecursiveCharacterTextSplitter.from_language(
+            language=Language.PYTHON, chunk_size=1000, chunk_overlap=200
+        )
+        return splitter
+    except Exception as e:
+        raise RuntimeError(
+            f"Something went wrong during initialization of code aware splitter {e}"
+        ) from e
+
+
+def file_info(directory_path: str, splitter: RecursiveCharacterTextSplitter):
+    """
+    Extracts the names and the content of the files in the current directory.
+
+    Args:
+        None
+
+    Returns:
+        tuple: A tuple containing two lists:
+            files: The list containing names of the available files in the current directory.
+            files_content: The list containing content of the files.
+
+    Raises:
+        RuntimeError: If file receiving was unsuccessful.
+    """
+
+    try:
+        documents = []
+        metadatas = []
+        ids = []
+
+        for root, _, files in os.walk(directory_path):
+            for file in files:
+                if file.endswith(".py"):
+                    file_path = os.path.join(root, file)  # Learn about os.path.join
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        code_content = f.read()
+
+                    chunks = splitter.split_text(code_content)  # Look up how it looks
+
+                    for i, chunk in enumerate(chunks):
+                        documents.append(chunk)
+                        metadatas.append({"source_file": file_path, "chunk_index": i})
+                        ids.append(f"{file_path}_chunk_{i}")
+        return documents, metadatas, ids
+    except Exception as e:
+        raise RuntimeError(f"File extraction was unsuccessful: {e}") from e
 
 
 # TODO: Improve the RAG model
