@@ -97,14 +97,22 @@ def file_info(
                     file_path = os.path.join(root, file)
                     with open(file_path, "r", encoding="utf-8") as f:
                         code_content = f.read()
-
-                    chunks = splitter.split_text(code_content)  # Look up how it looks
-                    # Tf is going on here????
-                    for i, chunk in enumerate(chunks):
-                        documents.append(chunk)
-                        metadatas.append({"source_file": file_path, "chunk_index": i})
-                        ids.append(f"{file_path}_chunk_{i}")
-        return documents, metadatas, ids
+                    try:
+                        chunks = splitter.split_text(
+                            code_content
+                        )  # Look up how it looks
+                        # Tf is going on here????
+                        for i, chunk in enumerate(chunks):
+                            documents.append(chunk)
+                            metadatas.append(
+                                {"source_file": file_path, "chunk_index": i}
+                            )
+                            ids.append(f"{file_path}_chunk_{i}")
+                            return documents, metadatas, ids
+                    except Exception as e:
+                        raise RuntimeError(
+                            f"Error occured when splitting the code into chunks.{e}"
+                        ) from e
     except Exception as e:
         raise RuntimeError(f"File extraction was unsuccessful: {e}") from e
 
@@ -193,9 +201,7 @@ def likely_files(file_ids: list[str], distances: list[float]) -> list[str]:
     likely_files = []
     try:
         for file in range(len(file_ids)):
-            if distances[file] <= 1.25:
-                likely_files.append(file_ids[file])
-            if len(likely_files) < 3 and distances[file] > 1.25:
+            if distances[file] <= 1.3:
                 likely_files.append(file_ids[file])
         return likely_files
 
