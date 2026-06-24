@@ -1,8 +1,12 @@
+import os
+
 from ai_agent.sub_agents.agent_prompts import main_model_prompt, router_prompt
 from ai_agent.sub_agents.file_search import (
     chroma_client_initialization,
-    file_distance,
+    chromadb_batch_upsert,
+    code_aware_splitter,
     file_info,
+    find_closest_files,
     likely_files,
 )
 from ai_agent.sub_agents.main_model import main_model
@@ -82,5 +86,18 @@ def main():
         print(response)
 
 
+def test():
+    initialized_chroma_client = chroma_client_initialization()
+    intialized_code_splitter = code_aware_splitter()
+    files_in_chunks = file_info(os.getcwd(), intialized_code_splitter)
+    chromadb_batch_upsert(
+        files_in_chunks[0],
+        files_in_chunks[1],
+        files_in_chunks[2],
+        initialized_chroma_client,
+    )
+    print(find_closest_files(initialized_chroma_client, "What's good in main file? "))
+
+
 if __name__ == "__main__":
-    main()
+    test()

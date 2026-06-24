@@ -10,13 +10,12 @@ from langchain_text_splitters import Language, RecursiveCharacterTextSplitter
 # Find the file distances -> Pick the most likely files
 
 
-def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collection:
+def chroma_client_initialization() -> chromadb.Collection:
     """
-    Initializes chroma and loads documents into the structure
+    Initializes chroma client.
 
     Args:
-        ids (list): The list of possible files.
-        documents (list): The list of content of files.
+        None
 
     Returns:
         chromadb.Collection: Prepared collection with the files and their content.
@@ -31,9 +30,6 @@ def chroma_client_initialization(ids: list, documents: list) -> chromadb.Collect
 
         # Chroma file architecture
         files_collection = chroma_client.get_or_create_collection(name="codebase_rag")
-
-        # Importing files and content of the files into chroma file architecture
-        files_collection.add(ids=ids, documents=documents)
 
         return files_collection
     except Exception as e:
@@ -92,6 +88,7 @@ def file_info(
         ids = []
 
         for root, _, files in os.walk(directory_path):
+            _[:] = [d for d in _ if not d.startswith(".")]
             for file in files:
                 if file.endswith(".py"):
                     file_path = os.path.join(root, file)
@@ -108,11 +105,11 @@ def file_info(
                                 {"source_file": file_path, "chunk_index": i}
                             )
                             ids.append(f"{file_path}_chunk_{i}")
-                            return documents, metadatas, ids
                     except Exception as e:
                         raise RuntimeError(
                             f"Error occured when splitting the code into chunks.{e}"
                         ) from e
+        return documents, metadatas, ids
     except Exception as e:
         raise RuntimeError(f"File extraction was unsuccessful: {e}") from e
 
@@ -148,7 +145,7 @@ def chromadb_batch_upsert(
         ) from e
 
 
-def find_closes_files(
+def find_closest_files(
     files_collection: chromadb.Collection, prompt: str
 ) -> tuple[list[str], list[float]]:
     """
@@ -197,7 +194,6 @@ def likely_files(file_ids: list[str], distances: list[float]) -> list[str]:
         RuntimeError: If there was a problem picking a closest file.
     """
 
-    # To be improved in the future
     likely_files = []
     try:
         for file in range(len(file_ids)):
