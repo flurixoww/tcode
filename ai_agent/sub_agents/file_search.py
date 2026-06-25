@@ -88,7 +88,12 @@ def file_info(
         ids = []
 
         for root, _, files in os.walk(directory_path):
-            _[:] = [d for d in _ if not d.startswith(".")]
+            _[:] = [
+                d
+                for d in _
+                if not d.startswith(".") and d != "__pycache__" and d != "tcode_env"
+            ]
+
             for file in files:
                 if file.endswith(".py"):
                     file_path = os.path.join(root, file)
