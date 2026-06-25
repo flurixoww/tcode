@@ -7,6 +7,7 @@ from ai_agent.sub_agents.file_search import (
     code_aware_splitter,
     file_info,
     find_closest_files,
+    ignored_files_file_info,
     likely_files,
 )
 from ai_agent.sub_agents.main_model import main_model
@@ -89,14 +90,24 @@ def main():
 def test():
     initialized_chroma_client = chroma_client_initialization()
     intialized_code_splitter = code_aware_splitter()
-    files_in_chunks = file_info(os.getcwd(), intialized_code_splitter)
+    files_in_chunks = file_info(
+        os.getcwd(), intialized_code_splitter, ignored_files_file_info()
+    )
     chromadb_batch_upsert(
         files_in_chunks[0],
         files_in_chunks[1],
         files_in_chunks[2],
         initialized_chroma_client,
     )
-    print(find_closest_files(initialized_chroma_client, "What's good in main file? "))
+
+    found_file_distance = (
+        find_closest_files(
+            initialized_chroma_client, "How do I fix the likely files function? "
+        ),
+    )
+
+    ids_for_model = likely_files(found_file_distance[0][0], found_file_distance[0][1])
+    print(ids_for_model)
 
 
 if __name__ == "__main__":

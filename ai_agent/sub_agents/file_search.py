@@ -61,9 +61,36 @@ def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSpli
         ) from e
 
 
+def ignored_files_file_info(filepath="ignore_rules.txt") -> str:
+    """
+    Made for the file_info function so the user can make their own file ignore.
+
+    Args:
+        filepath("ignore_rules.txt"): File with the ignored files/directories.
+
+    Returns:
+        ignored_files(str): files in a correct, readable for python ways.
+
+    Raises:
+        RuntimeError: If there was something wrong with the file.
+    """
+
+    try:
+        with open(filepath, "r") as f:
+            ignored_files = ""
+            for line in f:
+                if not line.startswith("#"):
+                    ignored_files = line.strip()
+        return ignored_files
+    except Exception as e:
+        raise RuntimeError(
+            f"There was a problem when trying to import data from ignore_rules {e}"
+        ) from e
+
+
 # Needs to be divided into seperate functions
 def file_info(
-    directory_path: str, splitter: RecursiveCharacterTextSplitter
+    directory_path: str, splitter: RecursiveCharacterTextSplitter, ignored_files: str
 ) -> tuple[list[str], list[dict], list[str]]:
     """
     Extracts the names and the content of the files in the current directory and divides it into chunks.
@@ -71,6 +98,7 @@ def file_info(
     Args:
         directory_path(str): Path to the directory from which all the files are going to be searched.
         splitter(RecursiveCharacterTextSplitter): Splitter model
+        ignored_files(str): Files to ignore when walking through the directory.
 
     Returns:
         tuple: A tuple containing three lists:
@@ -88,11 +116,7 @@ def file_info(
         ids = []
 
         for root, _, files in os.walk(directory_path):
-            _[:] = [
-                d
-                for d in _
-                if not d.startswith(".") and d != "__pycache__" and d != "tcode_env"
-            ]
+            _[:] = [d for d in _ if not d.startswith(".") and d not in ignored_files]
 
             for file in files:
                 if file.endswith(".py"):
