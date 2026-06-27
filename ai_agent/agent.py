@@ -55,33 +55,31 @@ def main():
 
     if json_model_response["decision"] == "file":
         print("Using access to the files to give an answer...")
-        file_ids_content = file_info()
-        # Initialization && implemination of the model
-        chroma_files_collection_architecture = chroma_client_initialization(
-            file_ids_content[0], file_ids_content[1]
+        initialized_chroma_client = chroma_client_initialization()
+        intialized_code_splitter = code_aware_splitter()
+        files_in_chunks = file_info(
+            os.getcwd(), intialized_code_splitter, ignored_files_file_info()
+        )
+        chromadb_batch_upsert(
+            files_in_chunks[0],
+            files_in_chunks[1],
+            files_in_chunks[2],
+            initialized_chroma_client,
         )
 
-        distance_to_the_files = file_distance(
-            chroma_files_collection_architecture, user_prompt
+        found_file_distance = (
+            find_closest_files(initialized_chroma_client, user_prompt),
         )
 
-        files_possibility = likely_files(
-            distance_to_the_files[0], distance_to_the_files[1]
+        ids_for_model = likely_files(
+            found_file_distance[0][0],
+            found_file_distance[0][1],
+            found_file_distance[0][2],
         )
-        print(f"Using following files to answer the question: {files_possibility}")
-        # Extract content from possible files && format it
-        possible_files_content = []
-        for file in files_possibility:
-            with open(file, "r", encoding="utf-8") as f:
-                file_content = f.read()
-                possible_files_content.append(file_content)
-        possible_files_content_string = "".join(possible_files_content)
 
-        # Main model question inquiry
-        response = main_model(
-            f"{main_model_prompt} <user query> {user_prompt} <attached files> {possible_files_content_string}"
-        )
-        print(response)
+        for id in ids_for_model:
+            print(id, ids_for_model[id])
+
     else:
         response = main_model(user_prompt)
         print(response)
@@ -115,4 +113,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    main()
