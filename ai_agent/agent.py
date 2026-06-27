@@ -77,10 +77,13 @@ def main():
             found_file_distance[0][2],
         )
 
-        for id in ids_for_model:
-            print(id, ids_for_model[id])
+        response = main_model(
+            f"{main_model_prompt} User prompt: {user_prompt} Code chunks: {ids_for_model}"
+        )
+        print(response)
 
     else:
+        print("Using general knowledge to asnwer the question?")
         response = main_model(user_prompt)
         print(response)
 
