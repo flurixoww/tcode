@@ -61,7 +61,7 @@ def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSpli
         ) from e
 
 
-def ignored_files_file_info(filepath="ignore_rules.txt") -> str:
+def ignored_files_file_info(filepath="ignore_rules.txt") -> list[str]:
     """
     Made for the file_info function so the user can make their own file ignore.
 
@@ -77,10 +77,10 @@ def ignored_files_file_info(filepath="ignore_rules.txt") -> str:
 
     try:
         with open(filepath, "r") as f:
-            ignored_files = ""
+            ignored_files = []
             for line in f:
                 if not line.startswith("#"):
-                    ignored_files = line.strip()
+                    ignored_files.append(line.strip())
         return ignored_files
     except Exception as e:
         raise RuntimeError(
@@ -90,7 +90,9 @@ def ignored_files_file_info(filepath="ignore_rules.txt") -> str:
 
 # Needs to be divided into seperate functions
 def file_info(
-    directory_path: str, splitter: RecursiveCharacterTextSplitter, ignored_files: str
+    directory_path: str,
+    splitter: RecursiveCharacterTextSplitter,
+    ignored_files: list[str],
 ) -> tuple[list[str], list[dict], list[str]]:
     """
     Extracts the names and the content of the files in the current directory and divides it into chunks.
@@ -176,7 +178,7 @@ def chromadb_batch_upsert(
 
 def find_closest_files(
     files_collection: chromadb.Collection, prompt: str
-) -> tuple[list[str], list[float]]:
+) -> tuple[list[str], list[float], list[str]]:
     """
     Using RAG model finds the likability of the files to the prompt.
 
@@ -185,10 +187,12 @@ def find_closest_files(
         prompt (str): The user's prompt.
 
     Returns:
-        tuple: A tuple containing two lists:
+        tuple:
             result['ids']: Contains the ids of the most relevant files.
             result['distances']: Contains the possibility of the file connection
             to the prompt in order respective to the ids.
+            result['documents']: Contains the code in a specific chunk.
+
     Raiess:
         RuntimeError: If model didn't work
     """
@@ -196,38 +200,43 @@ def find_closest_files(
         # Chroma RAG model settings and initialization
         result = files_collection.query(
             query_texts=prompt,
-            include=["distances"],
+            include=["documents", "distances"],
         )
 
-        if result["distances"] is not None:
-            return result["ids"][0], result["distances"][0]
+        if result["distances"] and result["documents"] is not None:
+            return result["ids"][0], result["distances"][0], result["documents"][0]
         else:
-            return result["ids"][0], []
+            return result["ids"][0], [], []
 
     except Exception as e:
         raise RuntimeError(f"Error occured when initializing a model. {e}") from e
 
 
-def likely_files(file_ids: list[str], distances: list[float]) -> list[str]:
+def likely_files(
+    file_ids: list[str], distances: list[float], documents: list[str]
+) -> dict[str, str]:
     """
     Picks the closest files to the prompt.
 
     Args:
         file_ids (list): File names.
         distances (list): File distance to the prompt, with the same order as file ids.
+        documents (list): Content of the files.
 
     Returns:
-        list: Name of the files from the least to the biggest distance.
+        dict:
+            str: Id of a chunk.
+            str: Content of a chunk.
 
     Raises:
         RuntimeError: If there was a problem picking a closest file.
     """
 
-    likely_files = []
+    likely_files = {}
     try:
         for file in range(len(file_ids)):
             if distances[file] <= 1.3:
-                likely_files.append(file_ids[file])
+                likely_files[file_ids[file]] = documents[file]
         return likely_files
 
     except Exception as e:

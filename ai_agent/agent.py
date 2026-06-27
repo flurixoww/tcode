@@ -106,8 +106,12 @@ def test():
         ),
     )
 
-    ids_for_model = likely_files(found_file_distance[0][0], found_file_distance[0][1])
-    print(ids_for_model)
+    ids_for_model = likely_files(
+        found_file_distance[0][0], found_file_distance[0][1], found_file_distance[0][2]
+    )
+
+    for id in ids_for_model:
+        print(id, ids_for_model[id])
 
 
 if __name__ == "__main__":
