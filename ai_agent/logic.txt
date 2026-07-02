@@ -1,9 +1,0 @@
-I need to use one ai model, that is going to decide
-1. Whether it is direct or file question
-2. We use RAG, to find the closest file to the user prompt
-    -Made a model, now it prints the closest file to the prompt
-    -Make a good code with classes and etc.
-    -Use it in agent
-    -Clear the past file choice model
-
-3. We send those files into the main model.

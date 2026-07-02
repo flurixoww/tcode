@@ -61,7 +61,7 @@ def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSpli
         ) from e
 
 
-def ignored_files_file_info(filepath="ignore_rules.txt") -> list[str]:
+def ignored_files_info(filepath="ignore_rules.txt") -> list[str]:
     """
     Made for the file_info function so the user can make their own file ignore.
 

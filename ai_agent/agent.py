@@ -1,13 +1,14 @@
 import os
 
 from ai_agent.sub_agents.agent_prompts import main_model_prompt, router_prompt
+from ai_agent.sub_agents.file_address import exact_file_address, exact_file_path
 from ai_agent.sub_agents.file_search import (
     chroma_client_initialization,
     chromadb_batch_upsert,
     code_aware_splitter,
     file_info,
     find_closest_files,
-    ignored_files_file_info,
+    ignored_files_info,
     likely_files,
 )
 from ai_agent.sub_agents.main_model import main_model
@@ -37,28 +38,32 @@ def prompts_connection(user_prompt: str, model_prompt: str) -> str:
 
 
 def main():
-    # 1. Get the prompt and connect them
-    # 2. Send the connected prompts to the routing model
-    # 3. If it is the file
-    #   1. We initialize the chroma client
-    #   2. We find info about files
-    #   3. We find distance of the prompt to the files
-    #   4. We find likely files to the prompt.
-    #   5. We send likely files content and the prompt directly to the model
-    #
-    # 4. If it is the general ques
-    #   1. We send it directly to the model
     user_prompt = input("Ask: ")
     unified_prompts = prompts_connection(user_prompt, router_prompt())
     raw_model_response = route(unified_prompts)
     json_model_response = parse_llm_json(raw_model_response)
+    addressed_files = exact_file_address(user_prompt)
 
-    if json_model_response["decision"] == "file":
+    if len(addressed_files) > 0:
+        print("Using files referenced in the prompt.")
+        files_content = {}
+        path_to_files = exact_file_path(addressed_files, ignored_files_info())
+        for file_path in path_to_files:
+            with open(file_path, "r", encoding="utf-8") as f:
+                file_content = f.read()
+                files_content[file_path] = file_content
+
+        response = main_model(
+            f"{main_model_prompt} User prompt: {user_prompt} Code chunks: {files_content}"
+        )
+        print(response)
+
+    elif json_model_response["decision"] == "file":
         print("Using access to the files to give an answer...")
         initialized_chroma_client = chroma_client_initialization()
         intialized_code_splitter = code_aware_splitter()
         files_in_chunks = file_info(
-            os.getcwd(), intialized_code_splitter, ignored_files_file_info()
+            os.getcwd(), intialized_code_splitter, ignored_files_info()
         )
         chromadb_batch_upsert(
             files_in_chunks[0],
