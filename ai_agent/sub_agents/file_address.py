@@ -1,3 +1,6 @@
+import os
+
+
 def exact_file_address(text: str, char1="@", char2=" ") -> list[str]:
     """
     Finds reference to the file in the text.
@@ -26,3 +29,29 @@ def exact_file_address(text: str, char1="@", char2=" ") -> list[str]:
 
     except Exception as e:
         raise RuntimeError(f"File finding was unsuccessfull. {e}") from e
+
+
+def exact_file_path(file_names: list[str]) -> list[str]:
+    """
+    Finds a full path to the file found in exact_file_address()
+
+    Args:
+        file_names(list[str]): Names of the files without full path to the directory.
+
+    Returns:
+        list[str]: Names of the files with the full path to the directory.
+
+    Raises:
+        RuntimeError: When there was a problem finding full path to the file.
+    """
+    try:
+        full_paths = []
+        for file in file_names:
+            for root, _, files in os.walk(os.getcwd()):
+                if file in files:
+                    full_paths.append(os.path.abspath(os.path.join(root, file)))
+        return full_paths
+    except Exception as e:
+        raise RuntimeError(
+            f"There was a problem finding a full path to the file {e}"
+        ) from e
