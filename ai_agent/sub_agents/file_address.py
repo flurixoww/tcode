@@ -1,6 +1,7 @@
 import os
 
 
+# Improve it a lil bit.
 def exact_file_address(text: str, char1="@", char2=" ") -> list[str]:
     """
     Finds reference to the file in the text.
@@ -22,12 +23,10 @@ def exact_file_address(text: str, char1="@", char2=" ") -> list[str]:
         files = []
         indices = [index for index, char in enumerate(text) if char == "@"]
         end_index = indices[0]
-        print(indices)
         for index in indices:
-            print(index)
             for char in range(len(text[end_index:])):
                 if text[char + end_index] == char2 and char + end_index > index:
-                    files.append(text[index : char + end_index])
+                    files.append(text[index + 1 : char + end_index])
                     end_index = char + end_index
                     break
         return files
