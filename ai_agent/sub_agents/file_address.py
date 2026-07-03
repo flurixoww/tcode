@@ -18,14 +18,19 @@ def exact_file_address(text: str, char1="@", char2=" ") -> list[str]:
     """
 
     try:
-        refered_file_names = []
-        start_index = text.find(char1) + 1
-
-        end_index = text[start_index:].find(char2)
-
-        refered_file_names.append(text[start_index : start_index + end_index])
-
-        return refered_file_names
+        text = text + " "
+        files = []
+        indices = [index for index, char in enumerate(text) if char == "@"]
+        end_index = indices[0]
+        print(indices)
+        for index in indices:
+            print(index)
+            for char in range(len(text[end_index:])):
+                if text[char + end_index] == char2 and char + end_index > index:
+                    files.append(text[index : char + end_index])
+                    end_index = char + end_index
+                    break
+        return files
 
     except Exception as e:
         raise RuntimeError(f"File finding was unsuccessfull. {e}") from e
