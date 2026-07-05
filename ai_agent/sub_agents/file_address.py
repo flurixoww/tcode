@@ -22,6 +22,8 @@ def exact_file_address(text: str, char1="@", char2=" ") -> list[str]:
         text = text + " "
         files = []
         indices = [index for index, char in enumerate(text) if char == "@"]
+        if len(indices) <= 0:
+            return []
         end_index = indices[0]
         for index in indices:
             for char in range(len(text[end_index:])):
