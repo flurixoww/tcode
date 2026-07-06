@@ -10,12 +10,12 @@ from langchain_text_splitters import Language, RecursiveCharacterTextSplitter
 # Find the file distances -> Pick the most likely files
 
 
-def chroma_client_initialization() -> chromadb.Collection:
+def chroma_client_initialization(name="codebase_rag") -> chromadb.Collection:
     """
     Initializes chroma client.
 
     Args:
-        None
+        name = "codebase_rag": Default name for chroma file architecture.
 
     Returns:
         chromadb.Collection: Prepared collection with the files and their content.
@@ -29,7 +29,7 @@ def chroma_client_initialization() -> chromadb.Collection:
         chroma_client = chromadb.PersistentClient(path="./chroma_db")
 
         # Chroma file architecture
-        files_collection = chroma_client.get_or_create_collection(name="codebase_rag")
+        files_collection = chroma_client.get_or_create_collection(name=name)
 
         return files_collection
     except Exception as e:
