@@ -234,9 +234,14 @@ def likely_files(
 
     likely_files = {}
     try:
+        temp = 0
         for file in range(len(file_ids)):
-            if distances[file] <= 1.3:
+            if file == 0:
                 likely_files[file_ids[file]] = documents[file]
+                temp = distances[file]
+            elif distances[file] - temp <= 0.194:
+                likely_files[file_ids[file]] = documents[file]
+                temp = distances[file]
         return likely_files
 
     except Exception as e:
