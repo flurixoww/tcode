@@ -1,0 +1,956 @@
+[
+  {
+    "id": 1,
+    "category": "direct",
+    "user_prompt": "How do I configure the central event loop in the primary entry module?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 2,
+    "category": "direct",
+    "user_prompt": "Where is the primary execution entrypoint located?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 3,
+    "category": "direct",
+    "user_prompt": "How do I instantiate the root application state?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 4,
+    "category": "direct",
+    "user_prompt": "Where are the global CLI execution arguments parsed?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 5,
+    "category": "direct",
+    "user_prompt": "How do I override the initial application parameters on startup?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 6,
+    "category": "direct",
+    "user_prompt": "Where is the core exception handler wrapped for the main app execution?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 7,
+    "category": "direct",
+    "user_prompt": "How to import and trigger the initial AI agent module boot?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 8,
+    "category": "direct",
+    "user_prompt": "Where is the graceful shutdown and teardown logic invoked?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 9,
+    "category": "direct",
+    "user_prompt": "How do I pass environment flags directly into the main thread runner?",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 10,
+    "category": "direct",
+    "user_prompt": "How to change the ANSI color codes for standard output?",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 11,
+    "category": "direct",
+    "user_prompt": "Where is the standard out buffer flushed to the console?",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 12,
+    "category": "direct",
+    "user_prompt": "How to implement relative cursor movement in the terminal view?",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 13,
+    "category": "direct",
+    "user_prompt": "Where is the terminal width and height parsing logic?",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 14,
+    "category": "direct",
+    "user_prompt": "How do I clear the console screen programmatically using escape sequences?",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 15,
+    "category": "direct",
+    "user_prompt": "Where is the interactive shell input stream handled?",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 16,
+    "category": "direct",
+    "user_prompt": "How to disable automatic text wrapping in the console output?",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 17,
+    "category": "direct",
+    "user_prompt": "How to modify the system instructions sent to the generation endpoint?",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 18,
+    "category": "direct",
+    "user_prompt": "Where are the default string templates stored for queries?",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 19,
+    "category": "direct",
+    "user_prompt": "How to properly concatenate dynamic user input with static system context?",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 20,
+    "category": "direct",
+    "user_prompt": "Where is the token truncation logic for oversized prompt payloads?",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 21,
+    "category": "direct",
+    "user_prompt": "How do I format the few-shot structured examples before sending them?",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 22,
+    "category": "direct",
+    "user_prompt": "Where are the semantic prompt injection defenses and sanitization implemented?",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 23,
+    "category": "direct",
+    "user_prompt": "How to inject external dynamic variables into the base prompt?",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 24,
+    "category": "direct",
+    "user_prompt": "How to implement asynchronous block reading for local storage?",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 25,
+    "category": "direct",
+    "user_prompt": "Where is the logic for safely committing byte streams to the local disk?",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 26,
+    "category": "direct",
+    "user_prompt": "How to handle OS-level file permission exceptions during IO operations?",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 27,
+    "category": "direct",
+    "user_prompt": "Where is the recursive directory tree creation utility located?",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 28,
+    "category": "direct",
+    "user_prompt": "How to force-delete temporary artifacts programmatically?",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 29,
+    "category": "direct",
+    "user_prompt": "Where is the file metadata and stat extraction logic executed?",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 30,
+    "category": "direct",
+    "user_prompt": "How to stream large file chunks directly into memory buffers?",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 31,
+    "category": "direct",
+    "user_prompt": "How to properly instantiate the primary AI client with authentication credentials?",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 32,
+    "category": "direct",
+    "user_prompt": "Where is the initial baseline model configuration established?",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 33,
+    "category": "direct",
+    "user_prompt": "How to define the model temperature and top-p settings during setup?",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 34,
+    "category": "direct",
+    "user_prompt": "Where is the initial network handshake validated with the provider?",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 35,
+    "category": "direct",
+    "user_prompt": "How to construct the fallback model initialization sequence?",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 36,
+    "category": "direct",
+    "user_prompt": "Where are the hardcoded default model timeout parameters defined?",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 37,
+    "category": "direct",
+    "user_prompt": "How to load the required local environment variables for the intelligence module?",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 38,
+    "category": "direct",
+    "user_prompt": "How to manage the core state machine transitions for the agent logic?",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 39,
+    "category": "direct",
+    "user_prompt": "Where is the primary memory context dictionary updated during execution?",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 40,
+    "category": "direct",
+    "user_prompt": "How to trace the agent's internal tool execution loop?",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 41,
+    "category": "direct",
+    "user_prompt": "Where is the generic planning and reasoning cycle implemented?",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 42,
+    "category": "direct",
+    "user_prompt": "How to properly track the generic agent's current task status?",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 43,
+    "category": "direct",
+    "user_prompt": "Where is the agent's main functional action dispatcher located?",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 44,
+    "category": "direct",
+    "user_prompt": "How to safely pause and resume the agent's background processing thread?",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 45,
+    "category": "direct",
+    "user_prompt": "How to configure the core logic that determines which sub-agent handles a request?",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 46,
+    "category": "direct",
+    "user_prompt": "Where are the specific routing confidence thresholds defined?",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 47,
+    "category": "direct",
+    "user_prompt": "How to register a brand new destination agent schema to the router?",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 48,
+    "category": "direct",
+    "user_prompt": "Where is the user intent classification logic parsed?",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 49,
+    "category": "direct",
+    "user_prompt": "How to gracefully fallback when the router cannot determine the target agent?",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 50,
+    "category": "direct",
+    "user_prompt": "Where are the internal route execution transition logs generated?",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 51,
+    "category": "direct",
+    "user_prompt": "How to mathematically weight different intent scores during routing?",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 52,
+    "category": "direct",
+    "user_prompt": "How to fine-tune the inference parameters for the primary generation model?",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 53,
+    "category": "direct",
+    "user_prompt": "Where is the main generation model's output syntax parser?",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 54,
+    "category": "direct",
+    "user_prompt": "How to dynamically update the foundational context block for the main model?",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 55,
+    "category": "direct",
+    "user_prompt": "Where is the specific error recovery and retry mechanism for the model?",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 56,
+    "category": "direct",
+    "user_prompt": "How to asynchronously stream the generated tokens directly from the model?",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 57,
+    "category": "direct",
+    "user_prompt": "Where are the supported functional capability flags evaluated for the main model?",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 58,
+    "category": "direct",
+    "user_prompt": "How to strictly wrap the model's network execution in an asynchronous timeout?",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 59,
+    "category": "direct",
+    "user_prompt": "How to tightly optimize the semantic search query against the local vector database?",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 60,
+    "category": "direct",
+    "user_prompt": "Where is the similarity ranking algorithm implemented for the retrieved documents?",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 61,
+    "category": "direct",
+    "user_prompt": "How to programmatically filter search results by explicit extensions?",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 62,
+    "category": "direct",
+    "user_prompt": "Where is the cross-encoder execution logic for search reranking?",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 63,
+    "category": "direct",
+    "user_prompt": "How to hard-limit the maximum absolute number of retrieved vectors?",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 64,
+    "category": "direct",
+    "user_prompt": "Where is the sliding window text chunk overlap logic defined for indexing?",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 65,
+    "category": "direct",
+    "user_prompt": "How to properly parse the exact line numbers from the semantic search hits?",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 66,
+    "category": "direct",
+    "user_prompt": "How to correctly resolve absolute paths from relative query strings?",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 67,
+    "category": "direct",
+    "user_prompt": "Where is the path normalization and sanitization utility function?",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 68,
+    "category": "direct",
+    "user_prompt": "How to robustly validate if a targeted file address actually exists on disk?",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 69,
+    "category": "direct",
+    "user_prompt": "Where is the OS-level symlink resolution logic securely handled?",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 70,
+    "category": "direct",
+    "user_prompt": "How to reliably extract the parent directory node from the file address?",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 71,
+    "category": "direct",
+    "user_prompt": "Where is the cross-platform path separator compatibility logic?",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 72,
+    "category": "direct",
+    "user_prompt": "How to recursively handle deeply nested directory path string expansions?",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 73,
+    "category": "direct",
+    "user_prompt": "How to perfectly isolate the specific context windows for the dedicated sub-agents?",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 74,
+    "category": "direct",
+    "user_prompt": "Where are the strict JSON formatting constraints defined for sub-agent outputs?",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 75,
+    "category": "direct",
+    "user_prompt": "How to safely inject dynamic tool schemas into the sub-agent instructions?",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 76,
+    "category": "direct",
+    "user_prompt": "Where are the specific persona behavioral definitions for the specialized workers?",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 77,
+    "category": "direct",
+    "user_prompt": "How to definitively dictate the negative constraints for a localized sub-agent?",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 78,
+    "category": "direct",
+    "user_prompt": "Where are the few-shot reasoning trace examples stored for the localized agents?",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 79,
+    "category": "direct",
+    "user_prompt": "How to implement version control mechanisms for the sub-agent system prompts?",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 101,
+    "category": "vague",
+    "user_prompt": "The program crashes immediately when I open it from my console.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 102,
+    "category": "vague",
+    "user_prompt": "Nothing happens at all when I run the startup command.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 103,
+    "category": "vague",
+    "user_prompt": "The application doesn't recognize my initial commands at boot time.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 104,
+    "category": "vague",
+    "user_prompt": "I want to stop the app from closing randomly when an error occurs.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 105,
+    "category": "vague",
+    "user_prompt": "The whole interface freezes right after starting up.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 106,
+    "category": "vague",
+    "user_prompt": "I get a weird text error as soon as the main screen loads.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 107,
+    "category": "vague",
+    "user_prompt": "I want to completely change what happens the second the tool is launched.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 108,
+    "category": "vague",
+    "user_prompt": "The startup sequence is taking way too long to finish.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 109,
+    "category": "vague",
+    "user_prompt": "I need the software to automatically run in the background the moment it starts.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 110,
+    "category": "vague",
+    "user_prompt": "The text on my screen looks totally garbled and impossible to read.",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 111,
+    "category": "vague",
+    "user_prompt": "I can't read the output because it uses dark blue text on a black background.",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 112,
+    "category": "vague",
+    "user_prompt": "The words are getting cut off abruptly at the edge of my monitor.",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 113,
+    "category": "vague",
+    "user_prompt": "The screen doesn't clear its previous messages when I ask it to refresh.",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 114,
+    "category": "vague",
+    "user_prompt": "My keystrokes aren't visually showing up when I try to type commands.",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 115,
+    "category": "vague",
+    "user_prompt": "The interface layout looks terrible and broken on smaller windows.",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 116,
+    "category": "vague",
+    "user_prompt": "Everything just prints on one giant line without going to the next.",
+    "correct_files": ["terminal.py"]
+  },
+  {
+    "id": 117,
+    "category": "vague",
+    "user_prompt": "The bot seems to completely forget my earlier instructions.",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 118,
+    "category": "vague",
+    "user_prompt": "It replies with weird formatting that doesn't match what I asked for.",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 119,
+    "category": "vague",
+    "user_prompt": "The system completely ignores the constraints I gave it.",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 120,
+    "category": "vague",
+    "user_prompt": "When I paste a large chunk of text, it cuts off the beginning.",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 121,
+    "category": "vague",
+    "user_prompt": "The AI is easily tricked by jailbreaks.",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 122,
+    "category": "vague",
+    "user_prompt": "It doesn't seem to understand the context of the project at all.",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 123,
+    "category": "vague",
+    "user_prompt": "The answers keep including weird template variables instead of real values.",
+    "correct_files": ["prompt.py"]
+  },
+  {
+    "id": 124,
+    "category": "vague",
+    "user_prompt": "The app completely fails to save my work to my hard drive.",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 125,
+    "category": "vague",
+    "user_prompt": "It says 'access denied' every time I try to save something.",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 126,
+    "category": "vague",
+    "user_prompt": "The folders I need aren't being created automatically.",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 127,
+    "category": "vague",
+    "user_prompt": "My temp files are piling up and never getting deleted.",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 128,
+    "category": "vague",
+    "user_prompt": "It can't seem to tell how big my documents are.",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 129,
+    "category": "vague",
+    "user_prompt": "When I load a massive file, my computer runs out of RAM and crashes.",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 130,
+    "category": "vague",
+    "user_prompt": "It corrupted my data when trying to write to the drive.",
+    "correct_files": ["file_manage.py"]
+  },
+  {
+    "id": 131,
+    "category": "vague",
+    "user_prompt": "It keeps saying 'unauthorized' the moment I start it up.",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 132,
+    "category": "vague",
+    "user_prompt": "The responses are way too random and hallucinated right out of the gate.",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 133,
+    "category": "vague",
+    "user_prompt": "It fails to connect to the cloud service on the first try.",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 134,
+    "category": "vague",
+    "user_prompt": "It doesn't automatically switch over when the main server is down.",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 135,
+    "category": "vague",
+    "user_prompt": "The connection just times out constantly without trying again.",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 136,
+    "category": "vague",
+    "user_prompt": "It's not reading my API keys from my system.",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 137,
+    "category": "vague",
+    "user_prompt": "The bot takes too long to respond on the very first query.",
+    "correct_files": ["ai_init.py"]
+  },
+  {
+    "id": 138,
+    "category": "vague",
+    "user_prompt": "The assistant gets stuck in an infinite loop of doing nothing.",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 139,
+    "category": "vague",
+    "user_prompt": "It completely forgets the step it just completed a second ago.",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 140,
+    "category": "vague",
+    "user_prompt": "The bot makes a plan but never actually follows through with it.",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 141,
+    "category": "vague",
+    "user_prompt": "It doesn't realize when it has finished the task.",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 142,
+    "category": "vague",
+    "user_prompt": "It tries to do too many things at exactly the same time and breaks.",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 143,
+    "category": "vague",
+    "user_prompt": "I can't seem to stop it once it starts thinking.",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 144,
+    "category": "vague",
+    "user_prompt": "It keeps repeating the exact same thought process over and over.",
+    "correct_files": ["agent.py"]
+  },
+  {
+    "id": 145,
+    "category": "vague",
+    "user_prompt": "The bot keeps answering coding questions with the file search tool.",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 146,
+    "category": "vague",
+    "user_prompt": "It sends my request to completely the wrong place.",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 147,
+    "category": "vague",
+    "user_prompt": "It gets confused and just gives up if my question is slightly ambiguous.",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 148,
+    "category": "vague",
+    "user_prompt": "There is no way for me to add another helper bot to the system.",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 149,
+    "category": "vague",
+    "user_prompt": "It doesn't tell me why it chose to use a specific tool.",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 150,
+    "category": "vague",
+    "user_prompt": "It thinks I want to write code when I actually just want to read it.",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 151,
+    "category": "vague",
+    "user_prompt": "It randomly switches contexts even when I'm talking about the same thing.",
+    "correct_files": ["router.py"]
+  },
+  {
+    "id": 152,
+    "category": "vague",
+    "user_prompt": "The text comes out all at once instead of streaming smoothly.",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 153,
+    "category": "vague",
+    "user_prompt": "The answers I get are full of broken markdown and syntax errors.",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 154,
+    "category": "vague",
+    "user_prompt": "It completely crashes if the AI provider sends a bad response.",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 155,
+    "category": "vague",
+    "user_prompt": "The bot generates responses that just cut off right in the middle.",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 156,
+    "category": "vague",
+    "user_prompt": "It doesn't seem to know what capabilities it has access to.",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 157,
+    "category": "vague",
+    "user_prompt": "The whole thing freezes if the network drops for a second.",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 158,
+    "category": "vague",
+    "user_prompt": "It generates way too much text and I can't stop it.",
+    "correct_files": ["main_model.py"]
+  },
+  {
+    "id": 159,
+    "category": "vague",
+    "user_prompt": "When I search, it gives me completely irrelevant results.",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 160,
+    "category": "vague",
+    "user_prompt": "It keeps searching python scripts when I explicitly want markdown.",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 161,
+    "category": "vague",
+    "user_prompt": "The results are in a totally random order that makes no sense.",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 162,
+    "category": "vague",
+    "user_prompt": "It returns way too many documents and overwhelms my screen.",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 163,
+    "category": "vague",
+    "user_prompt": "When it finds a match, it cuts the paragraph off so I can't read the whole thing.",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 164,
+    "category": "vague",
+    "user_prompt": "It can't tell exactly where in the document the match was found.",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 165,
+    "category": "vague",
+    "user_prompt": "The search function is missing obvious keywords in my files.",
+    "correct_files": ["file_search.py"]
+  },
+  {
+    "id": 166,
+    "category": "vague",
+    "user_prompt": "It can't find my files if I use shortcuts or aliases.",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 167,
+    "category": "vague",
+    "user_prompt": "It completely breaks when I use weird folder names or spaces.",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 168,
+    "category": "vague",
+    "user_prompt": "It says a document exists when I already deleted it.",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 169,
+    "category": "vague",
+    "user_prompt": "It gets confused between Windows and Mac slash directions.",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 170,
+    "category": "vague",
+    "user_prompt": "It can't figure out what folder a document is inside of.",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 171,
+    "category": "vague",
+    "user_prompt": "When I ask for a deeply buried file, it just gives up.",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 172,
+    "category": "vague",
+    "user_prompt": "It crashes if I give it a path that goes up a directory.",
+    "correct_files": ["file_address.py"]
+  },
+  {
+    "id": 173,
+    "category": "vague",
+    "user_prompt": "The specific helper tool keeps breaking its required output format.",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 174,
+    "category": "vague",
+    "user_prompt": "The specialist bot completely ignores the rules telling it what NOT to do.",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 175,
+    "category": "vague",
+    "user_prompt": "The secondary bots don't seem to have any examples to follow.",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 176,
+    "category": "vague",
+    "user_prompt": "The internal workers are acting out of character and getting confused.",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 177,
+    "category": "vague",
+    "user_prompt": "They don't understand the tools they are supposed to be using.",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 178,
+    "category": "vague",
+    "user_prompt": "The helpers mix up their tasks with each other.",
+    "correct_files": ["agent_prompts.py"]
+  },
+  {
+    "id": 199,
+    "category": "vague",
+    "user_prompt": "The program crashes immediately when I open it from my console.",
+    "correct_files": ["main.py"]
+  },
+  {
+    "id": 200,
+    "category": "vague",
+    "user_prompt": "Nothing happens at all when I run the startup command.",
+    "correct_files": ["main.py"]
+  }
+]
