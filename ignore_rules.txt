@@ -1,2 +1,5 @@
 __pycahce__
 venv
+chroma_db
+evals
+.zed
