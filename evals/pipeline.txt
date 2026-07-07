@@ -1,0 +1,5 @@
+1. Pass the files to code, make it comfortable to work with.
+  1. Convert it into a JSON file
+
+2. Make a function that finds the several model responses at the same time.
+3. We return the pandas, which states the id, prompt, correct files, correct_files_distances, files_distances, correct file with highest distance, incorrect file with lowest distance, delta
