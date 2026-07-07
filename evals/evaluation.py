@@ -92,34 +92,11 @@ def _make_row(data, chroma_client) -> pd.DataFrame:
 def main() -> None:
     with open("evals/synthetic_test_dataset_fixed.json", "r") as file:
         data = json.load(file)
-    initialized_chroma_client = chroma_client_initialization(name="eval_codebase_rag")
-    splitter = code_aware_splitter()
-    ignored_files = ignored_files_info()
-    dir_path = "/Users/flurixoww/Documents/Projects/tcode"
-    processed_files = file_info(dir_path, splitter, ignored_files)
-    chromadb_batch_upsert(
-        processed_files[0],
-        processed_files[1],
-        processed_files[2],
-        initialized_chroma_client,
-    )
-    for file in data:
-        user_prompt = file.get("user_prompt")
-        closest_files = find_closest_files(initialized_chroma_client, user_prompt)
-        print(closest_files[0])
-        print(closest_files[1])
-        print(file.get("id"))
-        print(file.get("correct_files"))
-
-
-def test() -> None:
-    with open("evals/synthetic_test_dataset_fixed.json", "r") as file:
-        data = json.load(file)
 
     initialized_chroma_client = chroma_client_initialization(name="eval_codebase_rag")
     splitter = code_aware_splitter()
     ignored_files = ignored_files_info()
-    dir_path = "/Users/flurixoww/Documents/Projects/tcode"
+    dir_path = os.getcwd()
     processed_files = file_info(dir_path, splitter, ignored_files)
     chromadb_batch_upsert(
         processed_files[0],
@@ -129,8 +106,9 @@ def test() -> None:
     )
     df = _make_row(data, initialized_chroma_client)
     valid_rows = df[df["Delta"] >= 0].mean(numeric_only=True)
+    df.to_csv(f"{os.getcwd()}/evals/prompts_dataset.csv", index=False)
     print(valid_rows["Delta"])
 
 
 if __name__ == "__main__":
-    test()
+    main()
