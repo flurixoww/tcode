@@ -1,5 +1,10 @@
-def router_prompt() -> str:
-    settings_router = """
+"""System prompts for the AI agent router and the main model."""
+
+import textwrap
+
+# Router prompt instructing the model how to classify queries.
+ROUTER_PROMPT = textwrap.dedent(
+    """\
     You are a routing classifier for a local AI assistant.
 
     Your only job is to decide whether the user's message can be answered with general reasoning alone,
@@ -40,11 +45,11 @@ def router_prompt() -> str:
       }
     }
     The following is a user question: """
-    return settings_router
+)
 
-
-def main_model_prompt() -> str:
-    main_prompt = """
+# Main coding assistant prompt instructing the model how to structure code edits.
+MAIN_MODEL_PROMPT = textwrap.dedent(
+    """\
     Role & Objective
     You are an expert AI coding assistant. Your objective is to read the user's request, analyze the provided dictionary of code chunks, and output the required code modifications. You must answer the user's prompt exactly, concisely, and accurately.
 
@@ -100,5 +105,20 @@ def main_model_prompt() -> str:
     Chunk ID: [Insert chunk_id here]
     Changed code: [Insert changed code here]
     """
+)
 
-    return main_prompt
+
+def router_prompt() -> str:
+    """Returns the router prompt.
+
+    Deprecated: Use ROUTER_PROMPT constant directly.
+    """
+    return ROUTER_PROMPT
+
+
+def main_model_prompt() -> str:
+    """Returns the main model prompt.
+
+    Deprecated: Use MAIN_MODEL_PROMPT constant directly.
+    """
+    return MAIN_MODEL_PROMPT

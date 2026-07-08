@@ -1,7 +1,7 @@
 import os
 from typing import Dict, List
 
-from ai_agent.sub_agents.agent_prompts import main_model_prompt, router_prompt
+from ai_agent.sub_agents.agent_prompts import MAIN_MODEL_PROMPT, ROUTER_PROMPT
 from ai_agent.sub_agents.file_address import exact_file_address, exact_file_path
 from ai_agent.sub_agents.file_search import (
     chroma_client_initialization,
@@ -52,7 +52,7 @@ def _handle_referenced_files(user_prompt: str, addressed_files: List[str]) -> No
             files_content[file_path] = file_content
 
     response = main_model(
-        f"{main_model_prompt} User prompt: {user_prompt} Code chunks: {files_content}"
+        f"{MAIN_MODEL_PROMPT} User prompt: {user_prompt} Code chunks: {files_content}"
     )
     print(response)
 
@@ -83,7 +83,7 @@ def _handle_file_search(user_prompt: str) -> None:
     ids_for_model = likely_files(ids, distances, documents)
 
     response = main_model(
-        f"{main_model_prompt} User prompt: {user_prompt} Code chunks: {ids_for_model}"
+        f"{MAIN_MODEL_PROMPT} User prompt: {user_prompt} Code chunks: {ids_for_model}"
     )
     print(response)
 
@@ -102,7 +102,7 @@ def _handle_general_knowledge(user_prompt: str) -> None:
 def main() -> None:
     """Prompts the user, routes the request, and executes the appropriate flow."""
     user_prompt = input("Ask: ")
-    unified_prompts = prompts_connection(user_prompt, router_prompt())
+    unified_prompts = prompts_connection(user_prompt, ROUTER_PROMPT)
     raw_model_response = route(unified_prompts)
     json_model_response = parse_llm_json(raw_model_response)
     addressed_files = exact_file_address(user_prompt)
