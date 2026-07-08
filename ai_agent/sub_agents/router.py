@@ -1,24 +1,24 @@
+"""Module for routing user prompts using a classifier model and parsing JSON responses."""
+
 import json
 import re
+from typing import Any
 
 from ollama import chat
 
 
 def route(prompt: str) -> str:
-    """
-    Routes the given prompt to the appropriate agent based on the LLM's response.
+    """Routes the given prompt using the router model.
 
     Args:
-        prompt (str): The user's prompt to route.
+        prompt: The user's prompt to route.
 
     Returns:
-        str: The raw text response from the LLM. (expected to contain JSON)
+        The raw text response from the LLM (expected to contain JSON).
 
     Raises:
         RuntimeError: If the local LLM communication fails.
-
     """
-
     try:
         response = chat(
             model="gemma3:4b",
@@ -26,25 +26,24 @@ def route(prompt: str) -> str:
             options={"temperature": 0},
         )
         return response["message"]["content"]
-
     except Exception as exc:
         raise RuntimeError(f"Failed to communicate with LLM: {exc}") from exc
 
 
-def parse_llm_json(raw: str) -> dict:
-    """
-    Parses the raw LLM response into a valid JSON dictionary.
+def parse_llm_json(raw: str) -> dict[str, Any]:
+    """Parses the raw LLM response into a valid JSON dictionary.
+
+    Handles optional markdown code fences surrounding the JSON object.
 
     Args:
-        raw (str): The raw LLM response string.
+        raw: The raw LLM response string.
 
     Returns:
-        dict: The parsed JSON dictionary.
+        The parsed JSON dictionary.
 
     Raises:
         ValueError: If the raw response is not valid JSON.
     """
-
     cleaned = raw.strip()
 
     fence_match = re.fullmatch(r"```(?:json)?\s*(.*?)\s*```", cleaned, flags=re.DOTALL)
