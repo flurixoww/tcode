@@ -1,66 +1,70 @@
+"""Module for extracting referred file names from text and resolving their absolute paths."""
+
 import os
 
 
-# Improve it a lil bit.
-def exact_file_address(text: str, char1="@", char2=" ") -> list[str]:
-    """
-    Finds reference to the file in the text.
+def exact_file_address(text: str, char1: str = "@", char2: str = " ") -> list[str]:
+    """Finds references to files in the text.
 
     Args:
-        text (str): The users prompt from which we will be trying to find the needed file.
-        char1 ("@"): Default character to refer to a certain file.
-        char2 (" "): Refering stops when we hit the space character.
+        text: The user's prompt from which we extract referred files.
+        char1: Prefix character indicating the start of a file reference.
+        char2: Character indicating the end of a file reference.
 
     Returns:
-        list[str]: list of refered files in the text.
+        A list of referred file names extracted from the text.
 
     Raises:
-        RuntimeError: When it failed to find the refered files.
+        RuntimeError: If file reference extraction fails.
     """
-
     try:
         text = text + " "
         files = []
-        indices = [index for index, char in enumerate(text) if char == "@"]
-        if len(indices) <= 0:
+
+        # Respect the 'char1' parameter instead of hardcoding '@'
+        indices = [index for index, char in enumerate(text) if char == char1]
+        if not indices:
             return []
+
         end_index = indices[0]
         for index in indices:
-            for char in range(len(text[end_index:])):
-                if text[char + end_index] == char2 and char + end_index > index:
-                    files.append(text[index + 1 : char + end_index])
-                    end_index = char + end_index
+            for char_offset in range(len(text[end_index:])):
+                current_char_idx = char_offset + end_index
+                if text[current_char_idx] == char2 and current_char_idx > index:
+                    files.append(text[index + 1 : current_char_idx])
+                    end_index = current_char_idx
                     break
         return files
 
     except Exception as e:
-        raise RuntimeError(f"File finding was unsuccessfull. {e}") from e
+        raise RuntimeError(f"File finding was unsuccessful: {e}") from e
 
 
 def exact_file_path(file_names: list[str], ignored_files: list[str]) -> list[str]:
-    """
-    Finds a full path to the file found in exact_file_address()
+    """Finds the absolute path to each file in the workspace.
 
     Args:
-        file_names(list[str]): Names of the files without full path to the directory.
-        ignored_files(list[str]): List of exception for the searching algorithm.
+        file_names: Names of files without their directory paths.
+        ignored_files: List of directory or file names to ignore during search.
+
     Returns:
-        list[str]: Names of the files with the full path to the directory.
+        A list of absolute paths to the found files.
 
     Raises:
-        RuntimeError: When there was a problem finding full path to the file.
+        RuntimeError: If finding the paths fails.
     """
     try:
         full_paths = []
         for file in file_names:
-            for root, _, files in os.walk(os.getcwd()):
-                _[:] = [
-                    d for d in _ if not d.startswith(".") and d not in ignored_files
+            for root, dirs, files in os.walk(os.getcwd()):
+                # Rename standard '_' walk variable to 'dirs' for clarity
+                dirs[:] = [
+                    d for d in dirs if not d.startswith(".") and d not in ignored_files
                 ]
                 if file in files:
                     full_paths.append(os.path.abspath(os.path.join(root, file)))
         return full_paths
     except Exception as e:
         raise RuntimeError(
-            f"There was a problem finding a full path to the file {e}"
+            f"There was a problem finding a full path to the file: {e}"
         ) from e
