@@ -1,29 +1,24 @@
-# Imports
+"""Module for managing codebase indexing and semantic search using ChromaDB and LangChain."""
+
 import os
 
 import chromadb
 import langchain_text_splitters
 from langchain_text_splitters import Language, RecursiveCharacterTextSplitter
 
-# Initialization of chroma client -> initialization of code aware splitter
-# Splitting files in chunks and organizing them -> Uploading those chunks in the RAG model
-# Find the file distances -> Pick the most likely files
 
-
-def chroma_client_initialization(name="codebase_rag") -> chromadb.Collection:
-    """
-    Initializes chroma client.
+def chroma_client_initialization(name: str = "codebase_rag") -> chromadb.Collection:
+    """Initializes the ChromaDB persistent client and collection.
 
     Args:
-        name = "codebase_rag": Default name for chroma file architecture.
+        name: Name for the Chroma collection.
 
     Returns:
-        chromadb.Collection: Prepared collection with the files and their content.
+        Prepared collection for indexing files and their content.
 
     Raises:
-        RuntimeError: If initialization of the model was unsuccessful.
+        RuntimeError: If client or collection initialization fails.
     """
-
     try:
         # Chroma initialization
         chroma_client = chromadb.PersistentClient(path="./chroma_db")
@@ -33,23 +28,18 @@ def chroma_client_initialization(name="codebase_rag") -> chromadb.Collection:
 
         return files_collection
     except Exception as e:
-        raise RuntimeError(f"The initialization of the model failed {e}") from e
+        raise RuntimeError(f"The initialization of the model failed: {e}") from e
 
 
 def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSplitter:
-    """
-    Initializes code aware splitters to split the code for the RAG model
+    """Initializes the code-aware text splitter for Python.
 
-    Args:
-        None
-
-    Retrurns:
-        RecursiveCharacterTextSplitter: Splitter model
+    Returns:
+        The recursive character text splitter.
 
     Raises:
-        RuntimeError: Something went wrong during the initialization of splitting model.
+        RuntimeError: If initialization of the splitting model fails.
     """
-
     try:
         splitter = RecursiveCharacterTextSplitter.from_language(
             language=Language.PYTHON, chunk_size=1000, chunk_overlap=200
@@ -57,24 +47,22 @@ def code_aware_splitter() -> langchain_text_splitters.RecursiveCharacterTextSpli
         return splitter
     except Exception as e:
         raise RuntimeError(
-            f"Something went wrong during initialization of code aware splitter {e}"
+            f"Something went wrong during initialization of code aware splitter: {e}"
         ) from e
 
 
-def ignored_files_info(filepath="ignore_rules.txt") -> list[str]:
-    """
-    Made for the file_info function so the user can make their own file ignore.
+def ignored_files_info(filepath: str = "ignore_rules.txt") -> list[str]:
+    """Reads the files or directories to ignore from a rules file.
 
     Args:
-        filepath("ignore_rules.txt"): File with the ignored files/directories.
+        filepath: Path to the file containing ignore rules.
 
     Returns:
-        ignored_files(str): files in a correct, readable for python ways.
+        A list of file and directory names to ignore.
 
     Raises:
-        RuntimeError: If there was something wrong with the file.
+        RuntimeError: If reading the ignore rules file fails.
     """
-
     try:
         with open(filepath, "r") as f:
             ignored_files = []
@@ -84,41 +72,40 @@ def ignored_files_info(filepath="ignore_rules.txt") -> list[str]:
         return ignored_files
     except Exception as e:
         raise RuntimeError(
-            f"There was a problem when trying to import data from ignore_rules {e}"
+            f"There was a problem when trying to import data from ignore_rules: {e}"
         ) from e
 
 
-# Needs to be divided into seperate functions
+# TODO(developer): Consider refactoring this function into smaller, single-responsibility functions.
 def file_info(
     directory_path: str,
     splitter: RecursiveCharacterTextSplitter,
     ignored_files: list[str],
 ) -> tuple[list[str], list[dict], list[str]]:
-    """
-    Extracts the names and the content of the files in the current directory and divides it into chunks.
+    """Extracts codebase file contents and splits them into text chunks.
 
     Args:
-        directory_path(str): Path to the directory from which all the files are going to be searched.
-        splitter(RecursiveCharacterTextSplitter): Splitter model
-        ignored_files(str): Files to ignore when walking through the directory.
+        directory_path: Path to the directory to walk through.
+        splitter: Text splitter model.
+        ignored_files: Files and directories to ignore when walking.
 
     Returns:
-        tuple: A tuple containing three lists:
-            documents (str): The chunks of the files.
-            metadatas (dict): File path to a certain chunk.
-            ids (str): Unique name for every chunk to keep database organized.
+        A tuple containing three lists:
+            - documents: The split text chunks.
+            - metadatas: Dictionaries mapping each chunk to its source file and index.
+            - ids: Unique string IDs for every chunk.
 
     Raises:
-        RuntimeError: If file receiving was unsuccessful.
+        RuntimeError: If file processing or text splitting fails.
     """
-
     try:
         documents = []
         metadatas = []
         ids = []
 
-        for root, _, files in os.walk(directory_path):
-            _[:] = [d for d in _ if not d.startswith(".") and d not in ignored_files]
+        for root, dirs, files in os.walk(directory_path):
+            # Prune hidden and ignored directories in-place using 'dirs' instead of '_'
+            dirs[:] = [d for d in dirs if not d.startswith(".") and d not in ignored_files]
 
             for file in files:
                 if file.endswith(".py"):
@@ -126,10 +113,7 @@ def file_info(
                     with open(file_path, "r", encoding="utf-8") as f:
                         code_content = f.read()
                     try:
-                        chunks = splitter.split_text(
-                            code_content
-                        )  # Look up how it looks
-                        # Tf is going on here????
+                        chunks = splitter.split_text(code_content)
                         for i, chunk in enumerate(chunks):
                             documents.append(chunk)
                             metadatas.append(
@@ -138,7 +122,7 @@ def file_info(
                             ids.append(f"{file_path}_chunk_{i}")
                     except Exception as e:
                         raise RuntimeError(
-                            f"Error occured when splitting the code into chunks.{e}"
+                            f"Error occurred when splitting the code into chunks: {e}"
                         ) from e
         return documents, metadatas, ids
     except Exception as e:
@@ -150,17 +134,17 @@ def chromadb_batch_upsert(
     metadatas: list[dict],
     ids: list[str],
     files_collection: chromadb.Collection,
-):
-    """
+) -> None:
+    """Upserts the document chunks and metadata into the Chroma collection.
+
     Args:
-        documents(list[str]): The chunks of the files
-        metadatas(list[dict]): File path to a certain chunk.
-        ids(list[str]): Unique name for every chunk to keep database organized.
-        files_collection(chromadb.Collection): Chromadb collection architecture.
-    Returns:
-        None
+        documents: The text chunks to upload.
+        metadatas: Metadata dictionaries for each chunk.
+        ids: Unique string IDs for each chunk.
+        files_collection: The target ChromaDB collection.
+
     Raises:
-        RuntimeError: When there was an error when trying to push the chunks.
+        RuntimeError: If the collection upsert fails.
     """
     try:
         if documents:
@@ -172,32 +156,29 @@ def chromadb_batch_upsert(
             print(f"Successfully indexed {len(documents)} chunks.")
     except Exception as e:
         raise RuntimeError(
-            f"Error occured when trying to index chunks into the rag file collection {e}"
+            f"Error occurred when trying to index chunks into the rag file collection: {e}"
         ) from e
 
 
 def find_closest_files(
     files_collection: chromadb.Collection, prompt: str
 ) -> tuple[list[str], list[float], list[str]]:
-    """
-    Using RAG model finds the likability of the files to the prompt.
+    """Finds chunks in the Chroma collection that are most semantically similar to the prompt.
 
     Args:
-        files_collection (chromadb.Collection): Chroma file architecture with already imported files.
-        prompt (str): The user's prompt.
+        files_collection: The Chroma collection containing indexed files.
+        prompt: The query string to search for.
 
     Returns:
-        tuple:
-            result['ids']: Contains the ids of the most relevant files.
-            result['distances']: Contains the possibility of the file connection
-            to the prompt in order respective to the ids.
-            result['documents']: Contains the code in a specific chunk.
+        A tuple containing:
+            - A list of matching chunk IDs.
+            - A list of match distance scores.
+            - A list of document texts for the matching chunks.
 
-    Raiess:
-        RuntimeError: If model didn't work
+    Raises:
+        RuntimeError: If the query fails to execute.
     """
     try:
-        # Chroma RAG model settings and initialization
         result = files_collection.query(
             query_texts=prompt,
             include=["documents", "distances"],
@@ -209,42 +190,38 @@ def find_closest_files(
             return result["ids"][0], [], []
 
     except Exception as e:
-        raise RuntimeError(f"Error occured when initializing a model. {e}") from e
+        raise RuntimeError(f"Error occurred when initializing a model: {e}") from e
 
 
 def likely_files(
     file_ids: list[str], distances: list[float], documents: list[str]
 ) -> dict[str, str]:
-    """
-    Picks the closest files to the prompt.
+    """Filters and selects the most relevant files based on search distances.
 
     Args:
-        file_ids (list): File names.
-        distances (list): File distance to the prompt, with the same order as file ids.
-        documents (list): Content of the files.
+        file_ids: List of chunk IDs.
+        distances: Semantic distance scores corresponding to the chunk IDs.
+        documents: The source text contents of each chunk.
 
     Returns:
-        dict:
-            str: Id of a chunk.
-            str: Content of a chunk.
+        A dictionary mapping the selected chunk IDs to their text content.
 
     Raises:
-        RuntimeError: If there was a problem picking a closest file.
+        RuntimeError: If selection logic encounters an error.
     """
-
-    likely_files = {}
+    likely_files_dict = {}
     try:
-        temp = 0
-        for file in range(len(file_ids)):
-            if file == 0:
-                likely_files[file_ids[file]] = documents[file]
-                temp = distances[file]
-            elif distances[file] - temp <= 0.194:
-                likely_files[file_ids[file]] = documents[file]
-                temp = distances[file]
-        return likely_files
+        temp = 0.0
+        for i in range(len(file_ids)):
+            if i == 0:
+                likely_files_dict[file_ids[i]] = documents[i]
+                temp = distances[i]
+            elif distances[i] - temp <= 0.194:
+                likely_files_dict[file_ids[i]] = documents[i]
+                temp = distances[i]
+        return likely_files_dict
 
     except Exception as e:
         raise RuntimeError(
-            f"Error occured during picking of the closest files {e}"
+            f"Error occurred during picking of the closest files: {e}"
         ) from e
