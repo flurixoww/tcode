@@ -99,9 +99,8 @@ def _handle_general_knowledge(user_prompt: str) -> None:
     print(response)
 
 
-def main() -> None:
+def main(user_prompt: str) -> None:
     """Prompts the user, routes the request, and executes the appropriate flow."""
-    user_prompt = input("Ask: ")
     unified_prompts = prompts_connection(user_prompt, ROUTER_PROMPT)
     raw_model_response = route(unified_prompts)
     json_model_response = parse_llm_json(raw_model_response)
@@ -116,4 +115,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main("")

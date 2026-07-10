@@ -1,5 +1,5 @@
 __pycahce__
-venv
+tcode_env
 chroma_db
 evals
 .zed
